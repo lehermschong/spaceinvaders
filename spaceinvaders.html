@@ -18,20 +18,30 @@
     </head>
     <body>
         <h1>Space Invaders</h1>
-        <svg id="canvas" width="600" height="600" style = "background-color:lightcoral">
+        <svg id="canvas" width="600" height="700" style = "background-color:lightcoral">
             <g id="playerShip" transform="translate(300,590)">
                 <polygon points="-10,10 10,10 10,-10 -10,-10"
                             style="fill:black">
                 </polygon>
               </g>
-              <text id="playerScore" font-size="30" class="textelements" x="75%" y="5%" dominant-baseline="middle" text-anchor="middle"/>
-              <text id="level" font-size="30" class="textelements" x="25%" y="5%" dominant-baseline="middle" text-anchor="middle"/>
+              <g transform = "translate(0,600)"><polygon points = "0,0 600,0, 600,100,0,100" style="fill:grey"></polygon></g>
+              <text id="playerScore" font-size="30" class="textelements" x="75%" y="620" dominant-baseline="middle" text-anchor="middle"/>
+              <text id="lives" font-size="30" class="textelements" x="50%" y="620" dominant-baseline="middle" text-anchor="middle"/>
+              <text id="level" font-size="30" class="textelements" x="25%" y="620" dominant-baseline="middle" text-anchor="middle"/>
+              <text id="upgrades" font-size="30" class="textelements" x="50%" y="670" dominant-baseline="middle" text-anchor="middle"/>
               <text id="gameover" font-size="50" class="textelements" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"/>
               <line x1 = "0", x2 = "600", y1 = "420", y2 = "420" style="stroke:red;stroke-width: 2"></line>;
         </svg>
-        <p>Left Arrow  - Move Left</p>
-        <p>Right Arrow - Move Right</p>
-        <p>Space Key   - Shoot</p>
-        <p>R Key       - Restart</p>
+        <div id="instructions" style = "float: left">
+            <h2>INSTRUCTIONS</h2>
+        <h3>Left Arrow  - Move Left</h3>
+        <h3>Right Arrow - Move Right</h3>
+        <h3>Space Key - Shoot</h3>
+        <h3>R Key - Restart</h3>
+        <h3>POWER-UPS</h3>
+        <h3>I Key- Piercing</h3>
+        <h3>O Key - Multishot</h3>
+        <h3>P - Revive/Life+1</h3>
+    </div>
     </body>
 </html>
