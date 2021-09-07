@@ -18,6 +18,7 @@
     </head>
     <body>
         <h1>Space Invaders</h1>
+        <div id="game" style = "float: left">
         <svg id="canvas" width="600" height="700" style = "background-color:lightcoral">
             <g id="playerShip" transform="translate(300,590)">
                 <polygon points="-10,10 10,10 10,-10 -10,-10"
@@ -32,16 +33,21 @@
               <text id="gameover" font-size="50" class="textelements" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"/>
               <line x1 = "0", x2 = "600", y1 = "420", y2 = "420" style="stroke:red;stroke-width: 2"></line>;
         </svg>
+        </div>
         <div id="instructions" style = "float: left">
-            <h2>INSTRUCTIONS</h2>
+        <h2>CONTROLS</h2>
         <h3>Left Arrow  - Move Left</h3>
         <h3>Right Arrow - Move Right</h3>
         <h3>Space Key - Shoot</h3>
         <h3>R Key - Restart</h3>
-        <h3>POWER-UPS</h3>
+        <h2>POWER-UPS</h2>
         <h3>I Key- Piercing</h3>
         <h3>O Key - Multishot</h3>
         <h3>P - Revive/Life+1</h3>
+        <h2>INSTRUCTIONS</h2>
+        <h3>Shoot and destroy all alien ships!</h3>
+        <h3>If you run out of lives or aliens touch the red line, you lose!</h3>
+        <h3>Gather score to purchase upgrades and lives!</h3>
     </div>
     </body>
 </html>
