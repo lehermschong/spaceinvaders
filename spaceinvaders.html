@@ -8,30 +8,31 @@
             svg {
                 background-color: rgb(41, 41, 36);
             }
-            .pbullet {fill: blueviolet;}
-            .alien {fill: green;}
-            .wall {fill: olive;}
-            .hole {fill: lightcoral}
-            .textelements {fill:black;}
+            .pbullet {fill: orange;}
+            .ebullet {fill: red}
+            .alien {fill: purple;}
+            .wall {fill: lightblue;}
+            .hole {fill: black}
+            .textelements {fill:lime;}
         </style>
         <script src="./dist/spaceinvaders.js"></script>
     </head>
     <body>
         <h1>Space Invaders</h1>
         <div id="game" style = "float: left">
-        <svg id="canvas" width="600" height="700" style = "background-color:lightcoral">
+        <svg id="canvas" width="600" height="700" style = "background-color:black">
             <g id="playerShip" transform="translate(300,590)">
                 <polygon points="-10,10 10,10 10,-10 -10,-10"
-                            style="fill:black">
+                            style="fill:yellow">
                 </polygon>
               </g>
-              <g transform = "translate(0,600)"><polygon points = "0,0 600,0, 600,100,0,100" style="fill:grey"></polygon></g>
+              <g transform = "translate(0,600)"><polygon points = "0,0 600,0, 600,100,0,100" style="fill:blue"></polygon></g>
               <text id="playerScore" font-size="30" class="textelements" x="75%" y="620" dominant-baseline="middle" text-anchor="middle"/>
               <text id="lives" font-size="30" class="textelements" x="50%" y="620" dominant-baseline="middle" text-anchor="middle"/>
               <text id="level" font-size="30" class="textelements" x="25%" y="620" dominant-baseline="middle" text-anchor="middle"/>
               <text id="upgrades" font-size="30" class="textelements" x="50%" y="670" dominant-baseline="middle" text-anchor="middle"/>
               <text id="gameover" font-size="50" class="textelements" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"/>
-              <line x1 = "0", x2 = "600", y1 = "420", y2 = "420" style="stroke:red;stroke-width: 2"></line>;
+              <line x1 = "0", x2 = "600", y1 = "420", y2 = "420" style="stroke:brown;stroke-width: 2"></line>;
         </svg>
         </div>
         <div id="instructions" style = "float: left">
