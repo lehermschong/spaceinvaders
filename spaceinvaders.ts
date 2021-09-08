@@ -476,8 +476,9 @@ function spaceinvaders() {
             },
             life: e.powerUp == 'addlife' && s.score >= e.price ? s.life + 1 : s.life, //buys a life
             score: s.score >= e.price &&//if we can afford it
-              ((e.powerUp == 'multishot' &&!s.ship.multishot) ||(e.powerUp=='piercingrounds' && !s.ship.piercing)) //if we want to buy multishot but already have it
-              // ( e.powerUp == 'piercingrounds' && !s.ship.piercing) //if we want piercing but already have it
+              (e.powerUp == 'addlife'|| //buy a life
+                (e.powerUp == 'multishot' &&!s.ship.multishot) || //if we want to buy multishot but already have it
+              (e.powerUp=='piercingrounds' && !s.ship.piercing)) //if we want piercing but already have it
               ? s.score - e.price : s.score //minus score for amount we bought
           } :
             tick(s, e.elapsed), //else tick and proceed as usual
@@ -511,10 +512,8 @@ function spaceinvaders() {
         buyPiercingRounds = keyObservable('keydown', 'KeyI', () => new Buy('piercingrounds', Constants.PiercingRoundsCost)),
         buyMultiShot = keyObservable('keydown', 'KeyO', () => new Buy('multishot', Constants.MultiShotCost)),
         buyMoreLife = keyObservable('keydown', 'KeyP', () => new Buy('addlife', Constants.BuyLifeCost))
-      function isNotNullOrUndefined<T extends Object>(input: null | undefined | T): input is T {
-        return input != null;
-      }
-      const subscription = merge(moveLeft, moveRight, moveLeftUp, moveRightUp, shoot, gameClock, restart, buyMultiShot, buyMoreLife, buyPiercingRounds)
+
+      merge(moveLeft, moveRight, moveLeftUp, moveRightUp, shoot, gameClock, restart, buyMultiShot, buyMoreLife, buyPiercingRounds)
         .pipe(scan(reduceState, initialState))
         .subscribe(updateView)
       /**
@@ -563,6 +562,10 @@ function spaceinvaders() {
           }
           const v = document.getElementById(b.id) || createBodyView();
           attr(v)({ cx: b.pos.x, cy: b.pos.y });
+        }
+        //helper function to check if an object isnt null or undefined
+        function isNotNullOrUndefined<T extends Object>(input: null | undefined | T): input is T {
+          return input != null;
         }
         //updates the bodyview for each of the following: holes, player/enemybullets,aliens,walls
         s.holes.forEach(updateBodyView)
