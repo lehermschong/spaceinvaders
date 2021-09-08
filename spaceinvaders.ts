@@ -436,7 +436,7 @@ function spaceinvaders() {
    */
   const reduceState = (s: State, e: Shoot | Move | Tick | RestartGame | Buy): State =>
     e instanceof Move ? {// if it is move, add the movement value to the ship's velocity
-      ...s, ship: { ...s.ship, vel: e.movement }
+      ...s, ship: { ...s.ship, vel: s.ship.vel.add(e.movement) }
     } :
       e instanceof Shoot ? { //if it was shoot
         ...s,
@@ -503,9 +503,9 @@ function spaceinvaders() {
             map(result));
 
       const moveLeft = keyObservable('keydown', 'ArrowLeft', () => new Move(new Vec(-Constants.ShipSpeed, 0))),
-        moveLeftUp = keyObservable('keyup', 'ArrowLeft', () => new Move(Vec.Zero)),
+        moveLeftUp = keyObservable('keyup', 'ArrowLeft', () => new Move(new Vec(Constants.ShipSpeed, 0))),
         moveRight = keyObservable('keydown', 'ArrowRight', () => new Move(new Vec(Constants.ShipSpeed, 0))),
-        moveRightUp = keyObservable('keyup', 'ArrowRight', () => new Move(Vec.Zero)),
+        moveRightUp = keyObservable('keyup', 'ArrowRight', () => new Move(new Vec(-Constants.ShipSpeed, 0))),
         shoot = keyObservable('keydown', 'Space', () => new Shoot()),
         restart = keyObservable('keydown', 'KeyR', () => new RestartGame()),
         buyPiercingRounds = keyObservable('keydown', 'KeyI', () => new Buy('piercingrounds', Constants.PiercingRoundsCost)),
