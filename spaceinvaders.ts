@@ -436,7 +436,7 @@ function spaceinvaders() {
    */
   const reduceState = (s: State, e: Shoot | Move | Tick | RestartGame | Buy): State =>
     e instanceof Move ? {// if it is move, add the movement value to the ship's velocity
-      ...s, ship: { ...s.ship, vel: s.ship.vel.add(e.movement) }
+      ...s, ship: { ...s.ship, vel:Math.abs(s.ship.vel.add(e.movement).x)>=Constants.ShipSpeed ?e.movement:s.ship.vel.add(e.movement) }
     } :
       e instanceof Shoot ? { //if it was shoot
         ...s,
