@@ -425,7 +425,7 @@ function spaceinvaders() {
             enemyBullets: newState.enemyBullets.map(moveBodybutReflect),
             exit: collided,
             // win:s.level>Constants.LevelCap,
-            aliens: s.aliens.length == 1 ? s.aliens.map(moveBody(3)) : s.aliens.map(moveBody(1)) //lone survivor gets tripled speed!!!
+            aliens: s.aliens.length <= s.level ? s.aliens.map(moveBody(3)) : s.aliens.map(moveBody(1)) //lone survivor gets tripled speed!!!
           })
     }
   /**
@@ -475,9 +475,9 @@ function spaceinvaders() {
               piercing: (e.powerUp == 'piercingrounds' && s.score >= e.price) || s.ship.piercing //same as above, for piercing
             },
             life: e.powerUp == 'addlife' && s.score >= e.price ? s.life + 1 : s.life, //buys a life
-            score: s.score >= e.price || //if we can afford it
-              (e.powerUp == 'multishot' && !s.ship.multishot) || //if we want to buy multishot but already have it
-              (e.powerUp == 'piercingrounds' && !s.ship.piercing) //if we want piercing but already have it
+            score: s.score >= e.price &&//if we can afford it
+              ((e.powerUp == 'multishot' &&!s.ship.multishot) ||(e.powerUp=='piercingrounds' && !s.ship.piercing)) //if we want to buy multishot but already have it
+              // ( e.powerUp == 'piercingrounds' && !s.ship.piercing) //if we want piercing but already have it
               ? s.score - e.price : s.score //minus score for amount we bought
           } :
             tick(s, e.elapsed), //else tick and proceed as usual
