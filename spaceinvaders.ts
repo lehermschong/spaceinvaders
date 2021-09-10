@@ -1,7 +1,24 @@
-import { concat, from, fromEvent, interval, merge, Observable } from 'rxjs';
-import { filter, map, scan, tap, mergeMap, takeUntil, reduce, min } from 'rxjs/operators';
+import {
+  concat,
+  from,
+  fromEvent,
+  interval,
+  merge,
+  Observable
+} from 'rxjs';
+import {
+  filter,
+  map,
+  scan,
+  tap,
+  mergeMap,
+  takeUntil,
+  reduce,
+  min
+} from 'rxjs/operators';
 type Key = 'ArrowLeft' | 'ArrowRight' | 'Space' | 'KeyR' | 'KeyI' | 'KeyO' | 'KeyP'
 type Event = 'keydown' | 'keyup'
+
 function spaceinvaders() {
   // Inside this function you will use the classes and functions 
   // from rx.js
@@ -11,6 +28,8 @@ function spaceinvaders() {
   // You will be marked on your functional programming style
   // as well as the functionality that you implement.
   // Document your key!
+
+  //CONSTANTS, TYPES AND CLASSES
   const
     Constants = {
       CanvasSize: 600,
@@ -21,7 +40,7 @@ function spaceinvaders() {
       ShipRadius: 10,
       AlienRadius: 6,
       AlienSpeed: 1,
-      ChancetoShoot: 0.01,
+      ChancetoShoot: 0.001,
       StartingWallCount: 5,
       WallRadius: 40,
       AlienBoundary: 420,
@@ -35,18 +54,28 @@ function spaceinvaders() {
     } as const
   type ViewType = 'ship' | 'pbullet' | 'ebullet' | 'alien' | 'wall' | 'hole'
   type PowerUp = 'multishot' | 'addlife' | 'piercingrounds'
-  class Tick { constructor(public readonly elapsed: number) { } }
-  class Move { constructor(public readonly movement: Vec) { } }
-  class Shoot { constructor() { } }
-  class RestartGame { constructor() { } }
-  class Buy { constructor(public readonly powerUp: PowerUp, public readonly price: number) { } }
+  class Tick {
+    constructor(public readonly elapsed: number) { }
+  }
+  class Move {
+    constructor(public readonly movement: Vec) { }
+  }
+  class Shoot {
+    constructor() { }
+  }
+  class RestartGame {
+    constructor() { }
+  }
+  class Buy {
+    constructor(public readonly powerUp: PowerUp, public readonly price: number) { }
+  }
   /**
- * An adapted version of the convenient vector class used in the Asteroids game in the course notes of FIT2102.
- * Functions have been adapted, added and removed based on needs. Such as rotate is removed as everything here
- * follows a rather linear trajectory.
- *
- * Partially adapted from: The Asteroids example
- */
+   * An adapted version of the convenient vector class used in the Asteroids game in the course notes of FIT2102.
+   * Functions have been adapted, added and removed based on needs. Such as rotate is removed as everything here
+   * follows a rather linear trajectory.
+   *
+   * Partially adapted from: The Asteroids example
+   */
   class Vec {
     /**
      * Constructor for a Vec object (which is a vector).
@@ -204,7 +233,7 @@ function spaceinvaders() {
     walls: ReadonlyArray<Body>
     outOfLife: boolean //gameover occurs when the player is out of life
     aliensTouch: boolean //gameover when aliens touch earth
-    restartGame: boolean  //signal if the game should be restarted
+    restartGame: boolean //signal if the game should be restarted
     exit: ReadonlyArray<Body> //bodies that are to be removed on the current interval tick
     score: number
     holes: ReadonlyArray<Body> //holes on the wall that allow bullets to pass through
@@ -227,7 +256,7 @@ function spaceinvaders() {
      * @param c number of columns of aliens
      * @returns an array of alien bodies
      */
-    startAliens = (r: number) => (c: number) => [...Array((r) * (c))]//array of size startaliencount
+    startAliens = (r: number) => (c: number) => [...Array((r) * (c))] //array of size startaliencount
       .map((_, i) => createCircle("alien")(i)(Constants.AlienRadius)(new Vec(i % (c) * Constants.AlienRadius * 3 + 2 * Constants.AlienRadius, i % (r) * Constants.AlienRadius * 3 + 2 * Constants.AlienRadius + 20))(new Vec(Constants.AlienSpeed, 0))),
     /**
      * Initial state of the game, this is the 'default' so to speak.
@@ -250,13 +279,17 @@ function spaceinvaders() {
       win: false,
       life: 1,
     },
+    //PURE FUNCTIONS
     /**
      * Helper function to check if the boundaries are touching with the body
      * @param {x,y}: a Vec, can be a position or velocity, hence it is separated and we don't use b.vel/b.pos
      * @param b the body which we are checking for
      * @returns a corrected Vec
      */
-    checkBoundaries = ({ x, y }: Vec) => (b: Body) => {
+    checkBoundaries = ({
+      x,
+      y
+    }: Vec) => (b: Body) => {
       const s = Constants.CanvasSize
       const r = b.radius
       const check = (v: number) => v < r ? r : v > s - r ? s - r : v;
@@ -305,24 +338,25 @@ function spaceinvaders() {
     /**
      * checks if element e, is a part of array a. adapted from asteroids.ts
      */
-    elem =
-      <T>(eq: (_: T) => (_: T) => boolean) =>
-        (a: ReadonlyArray<T>) =>
-          (e: T) => a.findIndex(eq(e)) >= 0,
+    elem = <
+      T>(eq: (_: T) => (_: T) => boolean) =>
+      (a: ReadonlyArray<T>) =>
+        (e: T) => a.findIndex(eq(e)) >= 0,
     /**
      * by combinating the usage of not and elem, we can return an array of elements from a, that do not appear in b. adapted from asteroids.ts
      */
-    except =
-      <T>(eq: (_: T) => (_: T) => boolean) =>
-        (a: ReadonlyArray<T>) =>
-          (b: ReadonlyArray<T>) => a.filter(not(elem(eq)(b))),
+    except = <
+      T>(eq: (_: T) => (_: T) => boolean) =>
+      (a: ReadonlyArray<T>) =>
+        (b: ReadonlyArray<T>) => a.filter(not(elem(eq)(b))),
     /**
      * Flattens a list and maps function f across it. adapted from asteroids.ts
      */
-    flatMap = <T, U>(
-      a: ReadonlyArray<T>,
-      f: (a: T) => ReadonlyArray<U>
-    ): ReadonlyArray<U> => Array.prototype.concat(...a.map(f)),
+    flatMap = <T,
+      U>(
+        a: ReadonlyArray<T>,
+        f: (a: T) => ReadonlyArray<U>
+      ): ReadonlyArray<U> => Array.prototype.concat(...a.map(f)),
 
     /**
      * Function that handles the collisions of various bodies in this game
@@ -373,7 +407,11 @@ function spaceinvaders() {
         bottomTouched = (a: Body) => a.pos.y >= Constants.AlienBoundary - Constants.AlienRadius,
         isAlienAtBottom = s.aliens.reduce((acc, x) => acc || bottomTouched(x), false),
         //we create a new state that would keep track of each bullet that touched a wall, and make a hole there.
-        newState = collidedallBullets.reduce((a, v) => ({ ...a, holes: a.holes.concat([createHole(a)(v)]), objCount: a.objCount + 1 }), s)
+        newState = collidedallBullets.reduce((a, v) => ({
+          ...a,
+          holes: a.holes.concat([createHole(a)(v)]),
+          objCount: a.objCount + 1
+        }), s)
       return <State>{
         ...newState,
         playerBullets: cut(newState.playerBullets)(collidedBullets.concat(collidedallBullets)), //remove all bullets that collided with alien, or wall but not in hole
@@ -388,11 +426,14 @@ function spaceinvaders() {
       }
     },
     /**
+     * Function to return a state where all aliens fire.
+     */
+    /**
      * Essential tick function. Handles the game state functionality at every tick interval. Adapted from asteroids.ts.
      */
-    tick = (s: State, elapsed: number) => {
+     tick = (s: State, elapsed: number) => {
       //returns a new state, that would update the aliens and each time they fired. We do this as we need to call State.rng.next() each time in the reduce.
-      const newState = elapsed % 10 ? s : s.aliens
+      const newState = s.aliens
         .reduce((a: State, v: Body) => ({
           ...a,
           rng: a.rng.next(),
@@ -435,8 +476,12 @@ function spaceinvaders() {
    * @returns a new, modified state to reflect a new game state
    */
   const reduceState = (s: State, e: Shoot | Move | Tick | RestartGame | Buy): State =>
-    e instanceof Move ? {// if it is move, add the movement value to the ship's velocity
-      ...s, ship: { ...s.ship, vel:Math.abs(s.ship.vel.add(e.movement).x)>=Constants.ShipSpeed ?e.movement:s.ship.vel.add(e.movement) }
+    e instanceof Move ? { // if it is move, add the movement value to the ship's velocity
+      ...s,
+      ship: {
+        ...s.ship,
+        vel: Math.abs(s.ship.vel.add(e.movement).x) >= Constants.ShipSpeed ? e.movement : s.ship.vel.add(e.movement)
+      }
     } :
       e instanceof Shoot ? { //if it was shoot
         ...s,
@@ -445,28 +490,34 @@ function spaceinvaders() {
             createPlayerBullet(s.objCount)
               (Constants.BulletRadius)
               (s.ship.pos.add(unitVec.scale(s.ship.radius)))(unitVec.scale(Constants.BulletVelocity)))
-            (Vec.unitVecInDirection())], [
-          ((unitVec: Vec) =>  //45 degrees to left
+            (Vec.unitVecInDirection())
+        ], [
+          ((unitVec: Vec) => //45 degrees to left
             createPlayerBullet(s.objCount + 1)
               (Constants.BulletRadius)
               (s.ship.pos.add(unitVec.scale(s.ship.radius)))(new Vec(1, -1).scale(Constants.BulletVelocity)))
-            (Vec.unitVecInDirection())], [
-          ((unitVec: Vec) =>  //45 degrees to right
+            (Vec.unitVecInDirection())
+        ], [
+          ((unitVec: Vec) => //45 degrees to right
             createPlayerBullet(s.objCount + 2)
               (Constants.BulletRadius)
               (s.ship.pos.add(unitVec.scale(s.ship.radius)))(new Vec(-1, -1).scale(Constants.BulletVelocity)))
-            (Vec.unitVecInDirection())])
-          : s.playerBullets.concat([// else just append one bullet
+            (Vec.unitVecInDirection())
+        ]) :
+          s.playerBullets.concat([ // else just append one bullet
             ((unitVec: Vec) =>
               createPlayerBullet(s.objCount)
                 (Constants.BulletRadius)
                 (s.ship.pos.add(unitVec.scale(s.ship.radius)))(unitVec.scale(Constants.BulletVelocity)))
-              (Vec.unitVecInDirection())]),
+              (Vec.unitVecInDirection())
+          ]),
         objCount: s.objCount + (s.ship.multishot ? 3 : 1)
       } :
         e instanceof RestartGame ? //if we need to restart the game, we set the state back to the initial state, but also fling all bullets, holes and preexisting aliens to be removed by the canvas.
-          ({ ...initialState, exit: s.exit.concat(s.playerBullets).concat(s.enemyBullets).concat(s.holes).concat(s.aliens) })
-          :
+          ({
+            ...initialState,
+            exit: s.exit.concat(s.playerBullets).concat(s.enemyBullets).concat(s.holes).concat(s.aliens)
+          }) :
           e instanceof Buy ? { //if e was buy, we alter the state, and work out the boolean logic based on what was bought
             ...s,
             ship: {
@@ -475,20 +526,19 @@ function spaceinvaders() {
               piercing: (e.powerUp == 'piercingrounds' && s.score >= e.price) || s.ship.piercing //same as above, for piercing
             },
             life: e.powerUp == 'addlife' && s.score >= e.price ? s.life + 1 : s.life, //buys a life
-            score: s.score >= e.price &&//if we can afford it
-              (e.powerUp == 'addlife'|| //buy a life
-                (e.powerUp == 'multishot' &&!s.ship.multishot) || //if we want to buy multishot but already have it
-              (e.powerUp=='piercingrounds' && !s.ship.piercing)) //if we want piercing but already have it
-              ? s.score - e.price : s.score //minus score for amount we bought
+            score: s.score >= e.price && //if we can afford it
+              (e.powerUp == 'addlife' || //buy a life
+                (e.powerUp == 'multishot' && !s.ship.multishot) || //if we want to buy multishot but already have it
+                (e.powerUp == 'piercingrounds' && !s.ship.piercing)) //if we want piercing but already have it
+              ?
+              s.score - e.price : s.score //minus score for amount we bought
           } :
             tick(s, e.elapsed), //else tick and proceed as usual
-
+    //IMPURE FUNCTIONS USED TO UPDATE THE GAME STREAM 
     /**
      * Function that in general handles all forms of keyboard inputs
      */
     keyboardControl = () => {
-      // get the svg canvas element
-      const gameClock = interval(10).pipe(map(e => new Tick(e)))
       /**
        * helper function that just takes in the key and make sure it isn't a repeat.
        * @param e type of keyboard event
@@ -499,11 +549,15 @@ function spaceinvaders() {
       const keyObservable = <T>(e: Event, k: Key, result: () => T): Observable<T> =>
         fromEvent<KeyboardEvent>(document, e)
           .pipe(
-            filter(({ code }) => code === k),
-            filter(({ repeat }) => !repeat),
+            filter(({
+              code
+            }) => code === k),
+            filter(({
+              repeat
+            }) => !repeat),
             map(result));
-
-      const moveLeft = keyObservable('keydown', 'ArrowLeft', () => new Move(new Vec(-Constants.ShipSpeed, 0))),
+      const gameClock = interval(10).pipe(map(e => new Tick(e))),
+        moveLeft = keyObservable('keydown', 'ArrowLeft', () => new Move(new Vec(-Constants.ShipSpeed, 0))),
         moveLeftUp = keyObservable('keyup', 'ArrowLeft', () => new Move(new Vec(Constants.ShipSpeed, 0))),
         moveRight = keyObservable('keydown', 'ArrowRight', () => new Move(new Vec(Constants.ShipSpeed, 0))),
         moveRightUp = keyObservable('keyup', 'ArrowRight', () => new Move(new Vec(-Constants.ShipSpeed, 0))),
@@ -534,10 +588,10 @@ function spaceinvaders() {
         upgrades.textContent = "Upgrades: " + (s.ship.multishot ? "multishot " : " ") + (s.ship.piercing ? "piercing " : " ") //display what upgrades have been bought
         const g = document.getElementById("gameover")!;
         s.outOfLife && s.score >= Constants.BuyLifeCost ? //if the user still has enough points to buy a life, when at 0 life
-          g.textContent = "Buy Life 'P' to Resume!"
-          : s.outOfLife && s.score < Constants.BuyLifeCost || s.aliensTouch ? //else if the user has not enough points, or aliens touchdown the bottom, game over
-            g.textContent = "GAME OVER!"
-            : (s.level == Constants.LevelCap && s.aliens.length == 0) ? //if the user managed to beat the final level at the cap, win the game
+          g.textContent = "Buy Life 'P' to Resume!" :
+          s.outOfLife && s.score < Constants.BuyLifeCost || s.aliensTouch ? //else if the user has not enough points, or aliens touchdown the bottom, game over
+            g.textContent = "GAME OVER!" :
+            (s.level == Constants.LevelCap && s.aliens.length == 0) ? //if the user managed to beat the final level at the cap, win the game
               g.textContent = "YOU BEAT THE GAME!!!" : g.textContent = ""
         ship.setAttribute('transform',
           `translate(${s.ship.pos.x},${s.ship.pos.y})`) //alters the ship's position at every tick based on the state
@@ -546,7 +600,11 @@ function spaceinvaders() {
          * @param e SVG view element to be updated
          * @param o the attribute that we need to update, usually in the form of an attribute key(string) that contains a modifier value (number or string)
          */
-        const attr = (e: Element)=>(o: { [key: string]: number | string, }) => { for (const k in o) e.setAttribute(k, String(o[k])) }
+        const attr = (e: Element) => (o: {
+          [key: string]: number | string,
+        }) => {
+          for (const k in o) e.setAttribute(k, String(o[k]))
+        }
         /**
          * Helper function to update each body in the view. This is meant to create/remove an svg element for the body.
          * Partially adapted from asteroids.ts.
@@ -555,13 +613,20 @@ function spaceinvaders() {
         const updateBodyView = (b: Body) => {
           function createBodyView() { //helper function to create a circle for each SVG element, EVERYTHING IS CIRCLES!!!
             const v = document.createElementNS(svg.namespaceURI, "ellipse")!;
-            attr(v)({id: b.id, rx: b.radius, ry: b.radius });
+            attr(v)({
+              id: b.id,
+              rx: b.radius,
+              ry: b.radius
+            });
             v.classList.add(b.viewType)
             svg.appendChild(v)
             return v;
           }
           const v = document.getElementById(b.id) || createBodyView();
-          attr(v)({ cx: b.pos.x, cy: b.pos.y });
+          attr(v)({
+            cx: b.pos.x,
+            cy: b.pos.y
+          });
         }
         //helper function to check if an object isnt null or undefined
         function isNotNullOrUndefined<T extends Object>(input: null | undefined | T): input is T {
@@ -577,14 +642,16 @@ function spaceinvaders() {
         s.exit.map(o => document.getElementById(o.id))
           .filter(isNotNullOrUndefined)
           .forEach(v => {
-            try { svg.removeChild(v) } //rare instances where two things would be removed in the same tick and result in a crash
+            try {
+              svg.removeChild(v)
+            } //rare instances where two things would be removed in the same tick and result in a crash
             catch (e) {
               console.log("Already removed: " + v.id)
             }
           })
       }
     }
-  keyboardControl()//calls the function to run the game
+  keyboardControl() //calls the function to run the game
 }
 
 // the following simply runs your pong function on window load.  Make sure to leave it in place.
@@ -592,4 +659,3 @@ if (typeof window != 'undefined')
   window.onload = () => {
     spaceinvaders();
   }
-
